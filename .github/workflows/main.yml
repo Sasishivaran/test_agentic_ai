@@ -1,0 +1,31 @@
+name: Agentic MLOps Pipeline
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 * * * *"
+
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+      - run: pip install -r requirements.txt
+      - run: python monitor.py
+      # TODO: Learner must add drift output parsing
+
+  retrain:
+    needs: monitor
+    runs-on: ubuntu-latest
+    # TODO: Learner must add conditional execution
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+      - run: pip install -r requirements.txt
+      - run: python retrain.py
+      # TODO: Learner must upload artifacts and configure MLflow
